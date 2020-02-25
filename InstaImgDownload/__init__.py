@@ -22,15 +22,26 @@ def login(user_username,user_password):
     driver.find_element_by_name('password').send_keys(Keys.ENTER)
     time.sleep(5)
 
-
-def DownloadProfilePhotos(username,photo_count):
+def user_photo_count(username):
+    try:
+        r = requests.get('https://www.instagram.com/'+username,headers=headers)
+        soup = BeautifulSoup(r.content,'html.parser')
+        photo_count = int(soup.find('meta',attrs={'property':'og:description'}).get('content').split('Following, ')[1].split(' ')[0].replace(',',''))
+    except:
+        print('Profile not found.')
+        sys.exit()
     if photo_count<=24:
         page = 1
     else:
         page = int((photo_count - 24) / 12 + 3)
-    
+
+
+
+def DownloadProfilePhotos(username):
+    page = user_photo_count(username)
     driver.get('https://www.instagram.com/'+username)
     driver.implicitly_wait(10)
+    time.sleep(3)
 
     img_url = []
     for x in range(page):
@@ -44,7 +55,7 @@ def DownloadProfilePhotos(username,photo_count):
                 img_url.append(photo.get('href'))
         ActionChains(driver).key_down(Keys.END).key_up(Keys.END).perform()
         time.sleep(3)
-    #driver.quit()
+    driver.quit()
 
     for photo_main_url in img_url:
         r = requests.get('https://www.instagram.com' + photo_main_url,headers=headers)
@@ -52,16 +63,11 @@ def DownloadProfilePhotos(username,photo_count):
         photo_link = soup.find('meta',attrs={'property':'og:image'}).get('content')
         wget.download(photo_link)
 
-    print("Done!")
-
-def DownloadTagPhotos(username,photo_count):
-    if photo_count<=24:
-        page = 1
-    else:
-        page = int((photo_count - 24) / 12 + 3)
-    
+def DownloadTagPhotos(username):
+    page = user_photo_count(username)
     driver.get('https://www.instagram.com/'+username+'/tagged/')
     driver.implicitly_wait(10)
+    time.sleep(3)
 
     img_url = []
     for x in range(page):
@@ -75,7 +81,7 @@ def DownloadTagPhotos(username,photo_count):
                 img_url.append(photo.get('href'))
         ActionChains(driver).key_down(Keys.END).key_up(Keys.END).perform()
         time.sleep(3)
-    #driver.quit()
+    driver.quit()
 
     for photo_main_url in img_url:
         r = requests.get('https://www.instagram.com' + photo_main_url,headers=headers)
