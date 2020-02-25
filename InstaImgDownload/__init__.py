@@ -34,7 +34,7 @@ def user_photo_count(username):
         page = 1
     else:
         page = int((photo_count - 24) / 12 + 3)
-
+    return page
 
 
 def DownloadProfilePhotos(username):
