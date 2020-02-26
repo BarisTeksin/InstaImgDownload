@@ -26,7 +26,7 @@ def user_photo_count(username):
     try:
         r = requests.get('https://www.instagram.com/'+username,headers=headers)
         soup = BeautifulSoup(r.content,'html.parser')
-        photo_count = int(soup.find('meta',attrs={'property':'og:description'}).get('content').split('Following, ')[1].split(' ')[0].replace(',',''))
+        photo_count = int(soup.find('meta',attrs={'property':'og:description'}).get('content').split('Following, ')[1].split(' ')[0].replace('.',''))
     except:
         print('Profile not found.')
         sys.exit()
