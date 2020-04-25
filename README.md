@@ -12,7 +12,7 @@ cd InstaImgDownload
 2. pip install
 
 ```
-pip install -r requerments.txt
+pip install -r requirements.txt
 ```
 
 3. run.py
